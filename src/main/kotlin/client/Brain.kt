@@ -25,6 +25,7 @@ class Brain(var client: Client) {
         when (words[0]) {
             "buscar" -> return find(words)
             "update" -> return update(words[1])
+            "nuevas" -> return news(words)
         }
         return listOf("QE ISE CABESSAAA???? Yo solo se de tarjetas, tvs, memorias, tablets, camaras, auriculares, ssd, hdd, " +
                 "procesadores, moviles e impresoras")
@@ -52,6 +53,12 @@ class Brain(var client: Client) {
     private fun getAnswerFor(type: String): List<String> {
         val res: List<ItemData> =
             client.getAsListOf("http://localhost:8080/web/scrap/ldlc/type/${types.get(type)}", ItemData::class.java)
+        return res.map { formatRawData(it) }
+    }
+
+    private fun news(words: List<String>): List<String> {
+        val res: List<ItemData> =
+                client.getAsListOf("http://localhost:8080/web/alert/${words[1]}", ItemData::class.java)
         return res.map { formatRawData(it) }
     }
 

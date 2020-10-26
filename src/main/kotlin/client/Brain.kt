@@ -27,8 +27,12 @@ class Brain(var client: Client) {
             "update" -> return update(words[1])
             "nuevas" -> return news(words)
         }
-        return listOf("QE ISE CABESSAAA???? Yo solo se de tarjetas, tvs, memorias, tablets, camaras, auriculares, ssd, hdd, " +
-                "procesadores, moviles e impresoras")
+        return listOf("""QE ISE CABESSAAA???? Yo solo se de tipos: tarjetas, tvs, memorias, tablets, camaras, auriculares, ssd, hdd, 
+                "procesadores, moviles e impresoras
+                Ademas estan los comandos:
+                buscar <tipo?> <palabra a buscar>
+                nuevas 
+                """)
     }
 
     private fun find(words: List<String>): List<String> {

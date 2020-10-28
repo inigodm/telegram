@@ -1,5 +1,6 @@
 package client.api
 
+import client.log.Logger
 import com.google.gson.Gson
 import exceptions.HTTPResponseError
 import io.github.rybalkinsd.kohttp.dsl.async.httpPutAsync
@@ -22,8 +23,12 @@ class Client {
 
     fun put(putUrl: String) {
         httpPutAsync {
-            url(putUrl)
-        }
+            try {
+                url(putUrl)
+            }catch (e: Exception){
+                Logger.getLogger().printError(e)
+            }
+        }.getCompleted().close()
     }
 }
 
@@ -42,12 +47,11 @@ class ListParametrizedType<T : Any?>(val clazz: Class<T>): ParameterizedType {
     }
 }
 
-
 fun main(args: Array<String>) {
     val client = Client()
-    println("- Retrieving data")
+    Logger.getLogger().printLine("- Retrieving data")
     val res: List<ItemData> = client.getAsListOf("http://localhost:8080/web/scrap/ldlc/type/impresora", ItemData::class.java)
-    println("- Updating data")
+    Logger.getLogger().printLine("- Updating data")
     client.put("http://localhost:8080/web/scrap/ldlc/type/any")
-    println(res)
+    Logger.getLogger().printLine(res)
 }

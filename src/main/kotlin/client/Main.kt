@@ -2,6 +2,7 @@ package client
 
 import client.api.Client
 import client.api.ItemData
+import client.log.Logger
 import org.telegram.telegrambots.ApiContextInitializer
 import org.telegram.telegrambots.meta.TelegramBotsApi
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException
@@ -26,9 +27,9 @@ fun sendNewMessage() {
 
 fun executeUpdate() {
     val client = Client()
-    println("- Updating data")
+    Logger.getLogger().printLine("- Updating data")
     client.put("http://localhost:8080/web/scrap/ldlc/type/any")
-    println("-----Async process started. Nothing more to do here-----")
+    Logger.getLogger().printLine("-----Async process started. Nothing more to do here-----")
 }
 
 fun runService() {

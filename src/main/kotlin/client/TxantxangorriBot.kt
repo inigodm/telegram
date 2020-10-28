@@ -1,16 +1,14 @@
 package client
 
 import client.api.Client
-import org.telegram.telegrambots.ApiContextInitializer
+import client.log.Logger
 import org.telegram.telegrambots.bots.TelegramLongPollingBot
-import org.telegram.telegrambots.meta.TelegramBotsApi
 import org.telegram.telegrambots.meta.api.methods.ParseMode
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage
 import org.telegram.telegrambots.meta.api.objects.Update
-import org.telegram.telegrambots.meta.exceptions.TelegramApiException
 
-
-class TxantxangorriBot(val brain: Brain = Brain(Client()), val chatsIds: MutableList<Long> = mutableListOf()): TelegramLongPollingBot() {
+class TxantxangorriBot(val brain: Brain = Brain(Client()),
+                       val chatsIds: MutableList<Long> = mutableListOf()): TelegramLongPollingBot() {
     val TOKEN = "1309064279:AAFLFm6TrWeWUk_A510WSDj9pOiRiAghD28"
     val NAME = "Txantxangorri_bot"
     /**
@@ -29,11 +27,11 @@ class TxantxangorriBot(val brain: Brain = Brain(Client()), val chatsIds: Mutable
         val messageTextReceived = update!!.message.text
         val chatId = update.message.chatId
         chatsIds.add(chatId)
-        println(chatId)
+        Logger.getLogger().printLine(chatId)
         answerMessage(messageTextReceived, chatId)
     }
 
-    public fun answerMessage(messageTextReceived: String, chatId: Long) {
+    fun answerMessage(messageTextReceived: String, chatId: Long) {
         var accum = ""
         var i = 0
         brain.answer(messageTextReceived).forEach {
@@ -63,12 +61,16 @@ class TxantxangorriBot(val brain: Brain = Brain(Client()), val chatsIds: Mutable
                 .setChatId(chatId)
                 .setParseMode(ParseMode.HTML)
                 .setText(message)
-        println("Mandando mensaje: $message a $chatId")
+        "Mandando mensaje: $message a $chatId".log()
         try{
             execute(sendMessage)
         } catch (e: Exception){
             e.printStackTrace()
         }
-        println("Mandado mensaje: $message a $chatId")
+        "Mandado mensaje: $message a $chatId".log()
     }
+}
+
+fun String.log() {
+    Logger.getLogger().printLine(this)
 }

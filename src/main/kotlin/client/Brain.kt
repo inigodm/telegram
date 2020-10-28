@@ -4,6 +4,7 @@ import client.api.Client
 import client.api.ItemData
 
 class Brain(var client: Client) {
+    val HOST = "localhost"
     val types = mapOf<String, String>(
         "tarjetas" to "tarjetagrfica",
         "tvs" to "tv",
@@ -38,11 +39,11 @@ class Brain(var client: Client) {
     private fun find(words: List<String>): List<String> {
         if (words.size == 3){
             val res: List<ItemData> =
-                client.getAsListOf("http://localhost:8080/web/scrap/ldlc/type/${types.get(words[1])}/query/${words[2]}", ItemData::class.java)
+                client.getAsListOf("http://$HOST:8080/web/scrap/ldlc/type/${types.get(words[1])}/query/${words[2]}", ItemData::class.java)
             return if (res.isEmpty()) listOf("No hay nada de eso") else res.map { formatRawData(it) }
         } else if (words.size == 2){
             val res: List<ItemData> =
-                client.getAsListOf("http://localhost:8080/web/scrap/ldlc/query/${words[1]}", ItemData::class.java)
+                client.getAsListOf("http://$HOST:8080/web/scrap/ldlc/query/${words[1]}", ItemData::class.java)
             return res.map { formatRawData(it) }
         } else {
             return listOf("Se usa asi: buscar [tipo] [palabra a buscar]")
@@ -50,19 +51,19 @@ class Brain(var client: Client) {
     }
 
     private fun update(type: String): List<String> {
-        client.put("http://localhost:8080/web/scrap/ldlc/type/$type")
+        client.put("http://$HOST:8080/web/scrap/ldlc/type/$type")
         return listOf("Actualizando... Tardara un ratico")
     }
 
     private fun getAnswerFor(type: String): List<String> {
         val res: List<ItemData> =
-            client.getAsListOf("http://localhost:8080/web/scrap/ldlc/type/${types.get(type)}", ItemData::class.java)
+            client.getAsListOf("http://$HOST:8080/web/scrap/ldlc/type/${types.get(type)}", ItemData::class.java)
         return res.map { formatRawData(it) }
     }
 
     private fun news(words: List<String>): List<String> {
         val res: List<ItemData> =
-                client.getAsListOf("http://localhost:8080/web/alert/${words[1]}", ItemData::class.java)
+                client.getAsListOf("http://$HOST:8080/web/alert/${words[1]}", ItemData::class.java)
         return res.map { formatRawData(it) }
     }
 

@@ -1,14 +1,17 @@
 package client
 
 import client.api.Client
-import client.log.Logger
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.telegram.telegrambots.bots.TelegramLongPollingBot
 import org.telegram.telegrambots.meta.api.methods.ParseMode
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage
 import org.telegram.telegrambots.meta.api.objects.Update
 
+
 class TxantxangorriBot(val brain: Brain = Brain(Client()),
-                       val chatsIds: MutableList<Long> = mutableListOf()): TelegramLongPollingBot() {
+                       val chatsIds: MutableList<Long> = mutableListOf(),
+                       val logger: Logger = LoggerFactory.getLogger(TxantxangorriBot::javaClass.name)): TelegramLongPollingBot() {
     val TOKEN = "1309064279:AAFLFm6TrWeWUk_A510WSDj9pOiRiAghD28"
     val NAME = "Txantxangorri_bot"
     /**
@@ -27,7 +30,7 @@ class TxantxangorriBot(val brain: Brain = Brain(Client()),
         val messageTextReceived = update!!.message.text
         val chatId = update.message.chatId
         chatsIds.add(chatId)
-        Logger.getLogger().printLine(chatId)
+        logger.info("Received a message from $chatId")
         answerMessage(messageTextReceived, chatId)
     }
 
@@ -61,16 +64,12 @@ class TxantxangorriBot(val brain: Brain = Brain(Client()),
                 .setChatId(chatId)
                 .setParseMode(ParseMode.HTML)
                 .setText(message)
-        "Mandando mensaje: $message a $chatId".log()
+        logger.info("Mandando mensaje: $message a $chatId")
         try{
             execute(sendMessage)
         } catch (e: Exception){
             e.printStackTrace()
         }
-        "Mandado mensaje: $message a $chatId".log()
+        logger.info("Mandado mensaje: $message a $chatId")
     }
-}
-
-fun String.log() {
-    Logger.getLogger().printLine(this)
 }

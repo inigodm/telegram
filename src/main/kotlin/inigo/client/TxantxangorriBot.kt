@@ -1,6 +1,7 @@
-package client
+package inigo.client
 
-import client.api.Client
+import inigo.client.api.Client
+import inigo.config.PropertiesReader
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.telegram.telegrambots.bots.TelegramLongPollingBot
@@ -12,8 +13,8 @@ import org.telegram.telegrambots.meta.api.objects.Update
 class TxantxangorriBot(val brain: Brain = Brain(Client()),
                        val chatsIds: MutableList<Long> = mutableListOf(),
                        val logger: Logger = LoggerFactory.getLogger(TxantxangorriBot::javaClass.name)): TelegramLongPollingBot() {
-    val TOKEN = "1309064279:AAFLFm6TrWeWUk_A510WSDj9pOiRiAghD28"
-    val NAME = "Txantxangorri_bot"
+    val TOKEN = PropertiesReader.getProperties().getProperty("token")
+    val NAME = PropertiesReader.getProperties().getProperty("name")
     /**
      * Returns the token of the bot to be able to perform Telegram Api Requests
      * @return Token of the bot
@@ -27,11 +28,13 @@ class TxantxangorriBot(val brain: Brain = Brain(Client()),
      * @param update Update received
      */
     override fun onUpdateReceived(update: Update?) {
+        logger.info("Received : $update")
         val messageTextReceived = update!!.message.text
         val chatId = update.message.chatId
         chatsIds.add(chatId)
         logger.info("Received a message from $chatId")
         answerMessage(messageTextReceived, chatId)
+        logger.info("Finished $chatId's $update")
     }
 
     fun answerMessage(messageTextReceived: String, chatId: Long) {

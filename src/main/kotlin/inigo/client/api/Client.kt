@@ -1,4 +1,4 @@
-package client.api
+package inigo.client.api
 
 import com.google.gson.Gson
 import inigo.exceptions.HTTPResponseError

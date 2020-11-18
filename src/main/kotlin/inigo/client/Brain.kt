@@ -64,10 +64,18 @@ class Brain(var client: Client) {
     private fun news(words: List<String>): List<String> {
         val res: List<ItemData> =
                 client.getAsListOf("http://$HOST:8080/web/alert/${words[1]}", ItemData::class.java)
-        return res.map { formatRawData(it) }
+        var type = ""
+        return res.map {
+            var str = ""
+            if (!type.equals(it.type)){
+                type = it.type
+                str += "<b>$type</b> <br>"
+            }
+            formatRawData(it)
+        }
     }
 
     private fun formatRawData(data: ItemData): String {
-        return "<b>${data.name}-\n${data.price.toDouble()/100}€ </b>${data.desc}\n<a href='${data.url}'>link</a>\n"
+        return "${data.name}-\n${data.price.toDouble()/100}€ ${data.desc}\n<a href='${data.url}'>link</a>\n"
     }
 }

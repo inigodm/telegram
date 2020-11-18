@@ -10,13 +10,13 @@ version '1.0-SNAPSHOT'
 
 shadowJar {
     manifest {
-        attributes 'Main-Class': 'client.MainKt'
+        attributes 'Main-Class': 'inigo.client.MainKt'
     }
 }
 
 jar {
     manifest {
-        attributes 'Main-Class': 'client.MainKt'
+        attributes 'Main-Class': 'inigo.client.MainKt'
     }
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
 }

@@ -8,10 +8,10 @@
     </appender>
     <appender name="roll-by-time"
               class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>../logs/app.inigo.log</file>
+        <file>/home/inigo/logs/telegram.inigo.log</file>
         <rollingPolicy
                 class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>../logs/telegram.%d{yyyy-MM-dd}.inigo.log.zip
+            <fileNamePattern>/home/inigo/logs/telegram.%d{yyyy-MM-dd}.inigo.log.zip
             </fileNamePattern>
             <maxHistory>20</maxHistory>
             <totalSizeCap>1MB</totalSizeCap>
@@ -26,7 +26,7 @@
         <appender-ref ref="roll-by-time"/>
     </logger-->
 
-    <root level="INFO">
+    <root level="TRACE">
         <appender-ref ref="roll-by-time"/>
     </root>
 </configuration>

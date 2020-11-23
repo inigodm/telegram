@@ -33,25 +33,34 @@ class TxantxangorriBot(val brain: Brain = Brain(Client()),
         val chatId = update.message.chatId
         chatsIds.add(chatId)
         logger.info("Received a message from $chatId")
-        answerMessage(messageTextReceived, chatId)
+        answerMessage(messageTextReceived, listOf(chatId))
         logger.info("Finished $chatId's $update")
     }
 
-    fun answerMessage(messageTextReceived: String, chatId: Long) {
+    fun answerMessage(messageTextReceived: String, chatIds: List<Long>) {
+        val response = brain.answer(messageTextReceived)
+        sendResponse(response, chatIds)
+    }
+
+    private fun sendResponse(response: List<String>, chatIds: List<Long>) {
+        if (response.isEmpty()) {
+            chatIds.forEach { sendMessage("No items found", it) }
+            return
+        }
         var accum = ""
         var i = 0
-        brain.answer(messageTextReceived).forEach {
+        response.forEach {
             if (i < 20) {
                 i++
                 accum += it
             } else {
-                sendMessage(accum, chatId)
+                chatIds.forEach { sendMessage(accum, it) }
                 accum = ""
                 i = 0
             }
         }
         if (accum.isNotEmpty()) {
-            sendMessage(accum, chatId)
+            chatIds.forEach { sendMessage(accum, it) }
         }
     }
 

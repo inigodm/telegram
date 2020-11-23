@@ -24,7 +24,7 @@ fun main(args: Array<String>) {
 fun sendNewMessage() {
     val chatIds =  mutableListOf(728173703L)
     val txantxangorri = TxantxangorriBot(chatsIds = chatIds)
-    txantxangorri.answerMessage("nuevas ldlc", chatIds[0])
+    txantxangorri.answerMessage("nuevas ldlc", chatIds)
 }
 
 fun executeUpdate() {

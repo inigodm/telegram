@@ -67,7 +67,7 @@ class Brain(var client: Client) {
         var type = ""
         return res.map {
             var str = ""
-            if (!type.equals(it.type)){
+            if (type != it.type){
                 type = it.type
                 str += "<b>$type</b> <br>"
             }

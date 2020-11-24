@@ -1,7 +1,6 @@
 package inigo.client
 
 import inigo.client.api.Client
-import inigo.client.api.ItemData
 import org.telegram.telegrambots.ApiContextInitializer
 import org.telegram.telegrambots.meta.TelegramBotsApi
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException

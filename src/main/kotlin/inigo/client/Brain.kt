@@ -64,14 +64,16 @@ class Brain(var client: Client) {
     private fun news(words: List<String>): List<String> {
         val res: List<ItemData> =
                 client.getAsListOf("http://$HOST:8080/web/alert/${words[1]}", ItemData::class.java)
+                        .sortedBy { it.type }
         var type = ""
         return res.map {
             var str = ""
+            println("$type != ${it.type}?")
             if (type != it.type){
                 type = it.type
                 str += "<b>$type</b> <br>"
             }
-            formatRawData(it)
+            str + formatRawData(it)
         }
     }
 

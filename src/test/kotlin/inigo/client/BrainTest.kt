@@ -69,7 +69,7 @@ class BrainTest {
 
         val response = sut.answer("nuevas lcdl")
 
-        assertEquals(response.joinToString(", "), "<b>type1</b> <br>${formatRawData(item1)}, ${formatRawData(item3)}, ${formatRawData(item4)}, <b>type2</b> <br>${formatRawData(item2)}")
+        assertEquals(response.joinToString(", "), "<b>type1</b>\n${formatRawData(item1)}, ${formatRawData(item3)}, ${formatRawData(item4)}, <b>type2</b>\n${formatRawData(item2)}")
 
     }
 

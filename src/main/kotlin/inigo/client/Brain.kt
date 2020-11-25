@@ -64,7 +64,7 @@ class Brain(var repo: Repository) {
             var str = ""
             if (type != it.type){
                 type = it.type
-                str += "<b><u>${types.filter { (k, v) -> k.equals(type) }}</u></b>\n"
+                str += "<b><u>${types.filter { (k, v) -> v.equals(type) }.keys.joinToString("")}</u></b>\n"
             }
             str + formatRawData(it)
         }

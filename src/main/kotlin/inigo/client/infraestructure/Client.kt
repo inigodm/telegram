@@ -1,4 +1,4 @@
-package inigo.client.api
+package inigo.client.infraestructure
 
 import com.google.gson.Gson
 import inigo.exceptions.HTTPResponseError
@@ -51,17 +51,3 @@ class ListParametrizedType<T : Any?>(val clazz: Class<T>): ParameterizedType {
         return null
     }
 }
-
-fun main(args: Array<String>) {
-    val client = Client()
-    var logger: Logger = LoggerFactory.getLogger(Client::javaClass.name)
-    logger.info("- Retrieving data")
-    val res: List<ItemData> = client.getAsListOf(
-        "http://localhost:8080/web/scrap/ldlc/type/impresora",
-        ItemData::class.java
-    )
-    logger.info("- Updating data")
-    client.put("http://localhost:8080/web/scrap/ldlc/type/any")
-    logger.info(res.toString())
-}
-

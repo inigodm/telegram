@@ -1,11 +1,11 @@
 package inigo.client
 
-import inigo.client.api.Client
-import inigo.client.api.ItemData
+import inigo.client.infraestructure.ItemData
+import inigo.client.infraestructure.Repository
 
-class Brain(var client: Client) {
+class Brain(var repo: Repository) {
     val HOST = "localhost"
-    val types = mapOf<String, String>(
+    val types = mapOf(
         "tarjetas" to "tarjetagrfica",
         "tvs" to "tv",
         "memorias" to "memoriapc",
@@ -38,39 +38,33 @@ class Brain(var client: Client) {
 
     private fun find(words: List<String>): List<String> {
         if (words.size == 3){
-            val res: List<ItemData> =
-                client.getAsListOf("http://$HOST:8080/web/scrap/ldlc/type/${types.get(words[1])}/query/${words[2]}", ItemData::class.java)
+            val res: List<ItemData> = repo.getProductsByTypeWithQuery(types.get(words[1]) ?: "any", words[2])
             return if (res.isEmpty()) listOf("No hay nada de eso") else res.map { formatRawData(it) }
         } else if (words.size == 2){
-            val res: List<ItemData> =
-                client.getAsListOf("http://$HOST:8080/web/scrap/ldlc/query/${words[1]}", ItemData::class.java)
-            return res.map { formatRawData(it) }
+            return repo.getProductsByQuery(words[1]).map { formatRawData(it) }
         } else {
             return listOf("Se usa asi: buscar [tipo] [palabra a buscar]")
         }
     }
 
     private fun update(type: String): List<String> {
-        client.put("http://$HOST:8080/web/scrap/ldlc/type/$type")
+        repo.updateProducts(type)
         return listOf("Actualizando... Tardara un ratico")
     }
 
     private fun getAnswerFor(type: String): List<String> {
-        val res: List<ItemData> =
-            client.getAsListOf("http://$HOST:8080/web/scrap/ldlc/type/${types.get(type)}", ItemData::class.java)
+        val res: List<ItemData> = repo.getProductsByType(types.get(type) ?: "")
         return res.map { formatRawData(it) }
     }
 
     private fun news(words: List<String>): List<String> {
-        val res: List<ItemData> =
-                client.getAsListOf("http://$HOST:8080/web/alert/${words[1]}", ItemData::class.java)
-                        .sortedBy { it.type }
+        val res: List<ItemData> = repo.getAlerts(words[1]);
         var type = ""
         return res.map {
             var str = ""
             if (type != it.type){
                 type = it.type
-                str += "<b>$type</b>\n"
+                str += "<b><u>${types.filter { (k, v) -> k.equals(type) }}</u></b>\n"
             }
             str + formatRawData(it)
         }

@@ -1,7 +1,7 @@
 package inigo.client
 
-import inigo.client.api.Client
-import inigo.client.api.ItemData
+import inigo.client.infraestructure.Client
+import inigo.client.infraestructure.ItemData
 import io.mockk.clearMocks
 import io.mockk.every
 import io.mockk.mockk

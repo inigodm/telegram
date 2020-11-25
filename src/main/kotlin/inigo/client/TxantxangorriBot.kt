@@ -1,6 +1,7 @@
 package inigo.client
 
-import inigo.client.api.Client
+import inigo.client.infraestructure.Client
+import inigo.client.infraestructure.Repository
 import inigo.config.PropertiesReader
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -10,7 +11,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMessage
 import org.telegram.telegrambots.meta.api.objects.Update
 
 
-class TxantxangorriBot(val brain: Brain = Brain(Client()),
+class TxantxangorriBot(val brain: Brain = Brain(Repository(Client())),
                        val chatsIds: MutableList<Long> = mutableListOf(),
                        val logger: Logger = LoggerFactory.getLogger(TxantxangorriBot::javaClass.name)): TelegramLongPollingBot() {
     val TOKEN = PropertiesReader.getProperties().getProperty("token")
@@ -50,13 +51,13 @@ class TxantxangorriBot(val brain: Brain = Brain(Client()),
         var accum = ""
         var i = 0
         response.forEach {
-            if (i < 20) {
+            if (i < 20 || !it.startsWith("<b>")) {
                 i++
                 accum += it
             } else {
-                chatIds.forEach { sendMessage(accum, it) }
-                accum = ""
-                i = 0
+                chatIds.forEach { toSend -> sendMessage(accum, toSend) }
+                accum = it
+                i = 1
             }
         }
         if (accum.isNotEmpty()) {

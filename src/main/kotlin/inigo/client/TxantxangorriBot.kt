@@ -55,13 +55,13 @@ class TxantxangorriBot(val brain: Brain = Brain(Repository(Client())),
                 i++
                 accum += it
             } else {
-                chatIds.forEach { toSend -> sendMessage(accum, toSend) }
+                chatIds.forEach { chatId -> sendMessage(accum, chatId) }
                 accum = it
                 i = 1
             }
         }
         if (accum.isNotEmpty()) {
-            chatIds.forEach { sendMessage(accum, it) }
+            chatIds.forEach { chatId -> sendMessage(accum, chatId) }
         }
     }
 

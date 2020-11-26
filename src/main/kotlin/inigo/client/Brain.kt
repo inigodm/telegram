@@ -27,12 +27,30 @@ class Brain(var repo: Repository) {
             "buscar" -> return find(words)
             "update" -> return update(words[1])
             "nuevas" -> return news(words)
+            "bilatu" -> return find(words)
+            "berriak" -> return find(words)
         }
-        return listOf("""QE ISE CABESSAAA???? Yo solo se de tipos: tarjetas, tvs, memorias, tablets, camaras, auriculares, ssd, hdd, 
-                "procesadores, moviles e impresoras
-                Ademas estan los comandos:
-                buscar <tipo?> <palabra a buscar>
-                nuevas 
+        return listOf("""Ze oxxxtia diozu burundi!!! 
+                
+            Erabil dezakezuen komanduek dabe (bai, itzulitak xD):
+                --> bilatu [mota?] [hitz bat bilatzeko (a.g: GTX, RTX, amd...)]
+                --> berriak
+                 
+            Ta [mota]-k honako hauek izan daitezke:
+            tarjetas, tvs, memorias, tablets, camaras, auriculares, ssd, hdd, procesadores, moviles e impresoras
+            
+            --
+            
+            QE ISE CABESSAAA???? 
+                
+            Estos son los comandos que puedes utilizar (Si he traducido los comandos XD):
+                --> buscar [tipo?] [palabra a buscar (p.e GTX, RTX, amd...)]
+                --> nuevas
+                 
+            Y los [tipo]s son estos:
+            
+            tarjetas, tvs, memorias, tablets, camaras, auriculares, ssd, hdd, 
+                procesadores, moviles e impresoras
                 """)
     }
 
@@ -43,13 +61,15 @@ class Brain(var repo: Repository) {
         } else if (words.size == 2){
             return repo.getProductsByQuery(words[1]).map { formatRawData(it) }
         } else {
-            return listOf("Se usa asi: buscar [tipo] [palabra a buscar]")
+            return listOf("""Se usa asi: buscar [tipo] [palabra a buscar]
+                Erablitzeko era: buscar [mota] [bilatzeko hitza]
+            """.trimMargin())
         }
     }
 
     private fun update(type: String): List<String> {
         repo.updateProducts(type)
-        return listOf("Actualizando... Tardara un ratico")
+        return listOf("Scraping eta informazioa gordetzen... minutu batzuk barru izango dira erantzun berriak")
     }
 
     private fun getAnswerFor(type: String): List<String> {
@@ -64,10 +84,15 @@ class Brain(var repo: Repository) {
             var str = ""
             if (type != it.type){
                 type = it.type
-                str += "<b><u>${types.filter { (k, v) -> v.equals(type) }.keys.joinToString("")}</u></b>\n"
+                str += "<b><u>\n\n${obtainTittle(type)}</u></b>\n\n"
             }
             str + formatRawData(it)
         }
+    }
+
+    private fun obtainTittle(type: String): String {
+        val title = types.filter { (k, v) -> v.equals(type) }.keys.joinToString("")
+        return if (title.isBlank()) type else title
     }
 
     private fun formatRawData(data: ItemData): String {

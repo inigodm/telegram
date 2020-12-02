@@ -3,6 +3,7 @@ package inigo.client
 import inigo.client.infraestructure.Client
 import inigo.client.infraestructure.Repository
 import inigo.config.PropertiesReader
+import inigo.repository.UserRepository
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.telegram.telegrambots.bots.TelegramLongPollingBot
@@ -12,7 +13,7 @@ import org.telegram.telegrambots.meta.api.objects.Update
 
 
 class TxantxangorriBot(val brain: Brain = Brain(Repository(Client())),
-                       val chatsIds: MutableList<Long> = mutableListOf(),
+                       val chatsIds: MutableList<Long> = UserRepository().getAllUserIds().toMutableList(),
                        val logger: Logger = LoggerFactory.getLogger(TxantxangorriBot::javaClass.name)): TelegramLongPollingBot() {
     val TOKEN = PropertiesReader.getProperties().getProperty("token")
     val NAME = PropertiesReader.getProperties().getProperty("name")
@@ -29,23 +30,30 @@ class TxantxangorriBot(val brain: Brain = Brain(Repository(Client())),
      * @param update Update received
      */
     override fun onUpdateReceived(update: Update?) {
-        logger.info("Received : $update")
         val messageTextReceived = update!!.message.text
         val chatId = update.message.chatId
-        chatsIds.add(chatId)
-        logger.info("Received a message from $chatId")
-        answerMessage(messageTextReceived, listOf(chatId))
+        val chatName = update.message.forwardSenderName
+        logger.info("Received -> ($chatId)${chatName} ${messageTextReceived}")
+        addNewUserIfAbsent(chatId, chatName)
+        answerMessage(messageTextReceived)
         logger.info("Finished $chatId's $update")
     }
-
-    fun answerMessage(messageTextReceived: String, chatIds: List<Long>) {
-        val response = brain.answer(messageTextReceived)
-        sendResponse(response, chatIds)
+    
+    private fun addNewUserIfAbsent(id: Long, name: String = "") {
+        if (!chatsIds.contains(id)) {
+            chatsIds.add(id)
+            UserRepository().insertUser(id, name)
+        }
     }
 
-    private fun sendResponse(response: List<String>, chatIds: List<Long>) {
+    fun answerMessage(messageTextReceived: String) {
+        val response = brain.answer(messageTextReceived)
+        sendResponse(response)
+    }
+
+    private fun sendResponse(response: List<String>) {
         if (response.isEmpty()) {
-            chatIds.forEach { sendMessage("No items found", it) }
+            chatsIds.forEach { sendMessage("No items found", it) }
             return
         }
         var accum = ""
@@ -55,13 +63,13 @@ class TxantxangorriBot(val brain: Brain = Brain(Repository(Client())),
                 i++
                 accum += it
             } else {
-                chatIds.forEach { chatId -> sendMessage(accum, chatId) }
+                chatsIds.forEach { chatId -> sendMessage(accum, chatId) }
                 accum = it
                 i = 1
             }
         }
         if (accum.isNotEmpty()) {
-            chatIds.forEach { chatId -> sendMessage(accum, chatId) }
+            chatsIds.forEach { chatId -> sendMessage(accum, chatId) }
         }
     }
 
@@ -72,7 +80,7 @@ class TxantxangorriBot(val brain: Brain = Brain(Repository(Client())),
         return  NAME
     }
 
-    fun sendMessage(message: String, chatId: Long) {
+    private fun sendMessage(message: String, chatId: Long) {
         val sendMessage = SendMessage()
                 .setChatId(chatId)
                 .setParseMode(ParseMode.HTML)

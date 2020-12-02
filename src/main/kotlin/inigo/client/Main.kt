@@ -1,6 +1,7 @@
 package inigo.client
 
 import inigo.client.infraestructure.Client
+import inigo.repository.UserRepository
 import org.telegram.telegrambots.ApiContextInitializer
 import org.telegram.telegrambots.meta.TelegramBotsApi
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException
@@ -21,9 +22,7 @@ fun main(args: Array<String>) {
 }
 
 fun sendNewMessage() {
-    val chatIds =  mutableListOf(728173703L, 532308270L)
-    val txantxangorri = TxantxangorriBot(chatsIds = chatIds)
-    txantxangorri.answerMessage("nuevas ldlc", chatIds)
+    TxantxangorriBot().answerMessage("nuevas ldlc")
 }
 
 fun executeUpdate() {
@@ -35,9 +34,8 @@ fun executeUpdate() {
 
 fun runService() {
     ApiContextInitializer.init()
-    val telegramBotsApi = TelegramBotsApi()
     try {
-        telegramBotsApi.registerBot(TxantxangorriBot())
+        TelegramBotsApi().registerBot(TxantxangorriBot())
     } catch (e: TelegramApiException) {
         e.printStackTrace()
     }

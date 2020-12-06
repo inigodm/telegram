@@ -46,8 +46,8 @@ class AddUsersIdTest {
         chatsIds.add(41L)
         chatsIds.add(42L)
 
-        assertEquals(sut.findReceivers(1, 42L), listOf(42L))
-        assertEquals(sut.findReceivers(0, 42L), listOf(41L, 42L))
+        assertEquals(sut.findReceivers(0, 42L), listOf(42L))
+        assertEquals(sut.findReceivers(1, 42L), listOf(41L, 42L))
     }
 
 }

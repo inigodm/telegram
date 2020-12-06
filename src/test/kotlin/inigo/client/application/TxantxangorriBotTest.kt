@@ -18,14 +18,4 @@ class TxantxangorriBotTest {
     fun setup() {
         clearMocks(brain, users, logger)
     }
-
-    @Test
-    fun `should return TOKEN`() {
-        assertEquals(sut.botToken, sut.TOKEN)
-    }
-
-    @Test
-    fun `should return bot username` () {
-        assertEquals(sut.botUsername, sut.NAME)
-    }
 }

@@ -14,7 +14,7 @@ class AddUsersId(val users: Users = Users(UserRepository()),
     }
 
     fun findReceivers(receiversCode: Int, chatId: Long): List<Long> {
-        return if (receiversCode == 1) {
+        return if (receiversCode == 0) {
             listOf(chatId)
         } else {
             chatsIds

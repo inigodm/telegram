@@ -22,7 +22,7 @@ fun main(args: Array<String>) {
 }
 
 fun sendNewMessage() {
-    TxantxangorriBot().answerMessage("nuevas ldlc", 1)
+    TxantxangorriBot().answerMessage("broadcast ldlc", 1)
 }
 
 fun executeUpdate() {

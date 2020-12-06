@@ -1,11 +1,12 @@
-package inigo.client
+package inigo.client.application
 
 import inigo.client.infraestructure.ItemData
 import inigo.client.infraestructure.Repository
 
 class Brain(var repo: Repository) {
-    val HOST = "localhost"
-    val types = mapOf(
+    val RESPONSE_TO_SENDER = 0
+    val RESPONSE_TO_ALL = 1
+    private val types = mapOf(
         "tarjetas" to "tarjetagrfica",
         "tvs" to "tv",
         "memorias" to "memoriapc",
@@ -18,18 +19,23 @@ class Brain(var repo: Repository) {
         "impresoras" to "impresoras",
         "moviles" to "mvilysmartphone",
     )
+
+    private val verbResponses = mapOf(
+        "buscar" to Pair(Brain::find, RESPONSE_TO_SENDER),
+        "bilatu" to Pair(Brain::find, RESPONSE_TO_SENDER),
+        "update" to Pair(Brain::update, RESPONSE_TO_SENDER),
+        "nuevas" to Pair(Brain::news, RESPONSE_TO_SENDER),
+        "berriak" to Pair(Brain::news, RESPONSE_TO_SENDER),
+        "broadcast" to Pair(Brain::news, RESPONSE_TO_ALL)
+    )
+
     fun answer(message: String): List<String> {
         val words = message.toLowerCase().split("\\s+".toRegex())
-        if (types.keys.contains(words[0])){
-            return getAnswerFor(words[0])
+
+        if (verbResponses.keys.contains(words[0])) {
+            return verbResponses[words[0]]!!.first.invoke(this, words)
         }
-        when (words[0]) {
-            "buscar" -> return find(words)
-            "update" -> return update(words[1])
-            "nuevas" -> return news(words)
-            "bilatu" -> return find(words)
-            "berriak" -> return find(words)
-        }
+
         return listOf("""Ze oxxxtia diozu burundi!!! 
                 
             Erabil dezakezuen komanduek dabe (bai, itzulitak xD):
@@ -57,9 +63,9 @@ class Brain(var repo: Repository) {
     private fun find(words: List<String>): List<String> {
         if (words.size == 3){
             val res: List<ItemData> = repo.getProductsByTypeWithQuery(types.get(words[1]) ?: "any", words[2])
-            return if (res.isEmpty()) listOf("No hay nada de eso") else res.map { formatRawData(it) }
+            return if (res.isEmpty()) listOf("No hay nada de eso") else res.map { obtainItemData(it) }
         } else if (words.size == 2){
-            return repo.getProductsByQuery(words[1]).map { formatRawData(it) }
+            return repo.getProductsByQuery(words[1]).map { obtainItemData(it) }
         } else {
             return listOf("""Se usa asi: buscar [tipo] [palabra a buscar]
                 Erablitzeko era: buscar [mota] [bilatzeko hitza]
@@ -67,35 +73,55 @@ class Brain(var repo: Repository) {
         }
     }
 
-    private fun update(type: String): List<String> {
-        repo.updateProducts(type)
+    private fun update(words: List<String>): List<String> {
+        repo.updateProducts(words[1])
         return listOf("Scraping eta informazioa gordetzen... minutu batzuk barru izango dira erantzun berriak")
     }
 
-    private fun getAnswerFor(type: String): List<String> {
-        val res: List<ItemData> = repo.getProductsByType(types.get(type) ?: "")
-        return res.map { formatRawData(it) }
+    private fun format(items: List<ItemData>): List<String> {
+        var i = 0
+        var type = ""
+        var accum = ""
+        val res = mutableListOf<String>()
+        items.forEach {
+            var str = ""
+            if (type != it.type) {
+                type = it.type
+                str += "<b><u>\n\n${obtainTittle(type)}</u></b>\n\n"
+            }
+            str += obtainItemData(it)
+            if (i < 20 || !str.startsWith("<b>")) {
+                i++
+                accum += str
+            } else {
+                res.add(accum)
+                accum = str
+                i = 1
+            }
+        }
+        res.add(accum)
+        return res
     }
 
     private fun news(words: List<String>): List<String> {
         val res: List<ItemData> = repo.getAlerts(words[1]);
-        var type = ""
-        return res.map {
-            var str = ""
-            if (type != it.type){
-                type = it.type
-                str += "<b><u>\n\n${obtainTittle(type)}</u></b>\n\n"
-            }
-            str + formatRawData(it)
-        }
+        return format(res)
     }
 
     private fun obtainTittle(type: String): String {
-        val title = types.filter { (k, v) -> v.equals(type) }.keys.joinToString("")
+        val title = types.filter { (k, v) -> v == type }.keys.joinToString("")
         return if (title.isBlank()) type else title
     }
 
-    private fun formatRawData(data: ItemData): String {
+    private fun obtainItemData(data: ItemData): String {
         return "${data.name}-\n${data.price.toDouble()/100}€ ${data.desc}\n<a href='${data.url}'>link</a>\n"
+    }
+
+    fun receivers(message: String): Int {
+        val words = message.toLowerCase().split("\\s+".toRegex())
+        if (verbResponses.keys.contains(words[0])) {
+            return verbResponses[words[0]]!!.second
+        }
+        return RESPONSE_TO_SENDER
     }
 }

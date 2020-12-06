@@ -1,7 +1,7 @@
-package inigo.client
+package inigo.client.infraestructure
 
-import inigo.client.infraestructure.Client
-import inigo.client.infraestructure.Repository
+import inigo.client.application.AddUsersId
+import inigo.client.application.Brain
 import inigo.config.PropertiesReader
 import inigo.repository.UserRepository
 import org.slf4j.Logger
@@ -13,10 +13,11 @@ import org.telegram.telegrambots.meta.api.objects.Update
 
 
 class TxantxangorriBot(val brain: Brain = Brain(Repository(Client())),
-                       val chatsIds: MutableList<Long> = UserRepository().getAllUserIds().toMutableList(),
+                       val users: AddUsersId = AddUsersId(Users(UserRepository())),
                        val logger: Logger = LoggerFactory.getLogger(TxantxangorriBot::javaClass.name)): TelegramLongPollingBot() {
     val TOKEN = PropertiesReader.getProperties().getProperty("token")
     val NAME = PropertiesReader.getProperties().getProperty("name")
+
     /**
      * Returns the token of the bot to be able to perform Telegram Api Requests
      * @return Token of the bot
@@ -34,42 +35,20 @@ class TxantxangorriBot(val brain: Brain = Brain(Repository(Client())),
         val chatId = update.message.chatId
         val chatName = update.message.forwardSenderName
         logger.info("Received -> ($chatId)${chatName} ${messageTextReceived}")
-        addNewUserIfAbsent(chatId, chatName)
-        answerMessage(messageTextReceived)
+        users.addNewUserIdIfAbsent(chatId, chatName)
+        answerMessage(messageTextReceived, chatId)
         logger.info("Finished $chatId's $update")
     }
-    
-    private fun addNewUserIfAbsent(id: Long, name: String = "") {
-        if (!chatsIds.contains(id)) {
-            chatsIds.add(id)
-            UserRepository().insertUser(id, name)
-        }
+
+    fun answerMessage(messageTextReceived: String, chatId: Long = 0L) {
+        sendResponse(brain.answer(messageTextReceived), users.findReceivers(brain.receivers(messageTextReceived), chatId))
     }
 
-    fun answerMessage(messageTextReceived: String) {
-        val response = brain.answer(messageTextReceived)
-        sendResponse(response)
-    }
-
-    private fun sendResponse(response: List<String>) {
+    private fun sendResponse(response: List<String>, to: List<Long>) {
         if (response.isEmpty()) {
-            chatsIds.forEach { sendMessage("No items found", it) }
-            return
-        }
-        var accum = ""
-        var i = 0
-        response.forEach {
-            if (i < 20 || !it.startsWith("<b>")) {
-                i++
-                accum += it
-            } else {
-                chatsIds.forEach { chatId -> sendMessage(accum, chatId) }
-                accum = it
-                i = 1
-            }
-        }
-        if (accum.isNotEmpty()) {
-            chatsIds.forEach { chatId -> sendMessage(accum, chatId) }
+            to.forEach { sendMessage("No items found", it) }
+        } else {
+            to.forEach { chatId -> response.forEach { sendMessage(it, chatId) } }
         }
     }
 

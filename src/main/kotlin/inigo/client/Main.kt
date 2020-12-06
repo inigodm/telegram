@@ -1,7 +1,7 @@
 package inigo.client
 
+import inigo.client.infraestructure.TxantxangorriBot
 import inigo.client.infraestructure.Client
-import inigo.repository.UserRepository
 import org.telegram.telegrambots.ApiContextInitializer
 import org.telegram.telegrambots.meta.TelegramBotsApi
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException
@@ -22,7 +22,7 @@ fun main(args: Array<String>) {
 }
 
 fun sendNewMessage() {
-    TxantxangorriBot().answerMessage("nuevas ldlc")
+    TxantxangorriBot().answerMessage("nuevas ldlc", 1)
 }
 
 fun executeUpdate() {

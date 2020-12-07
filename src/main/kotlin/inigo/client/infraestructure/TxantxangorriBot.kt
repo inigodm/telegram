@@ -33,7 +33,7 @@ class TxantxangorriBot(val brain: Brain = Brain(Repository(Client())),
     override fun onUpdateReceived(update: Update?) {
         val messageTextReceived = update!!.message.text
         val chatId = update.message.chatId
-        val chatName = update.message.forwardSenderName
+        val chatName = update.message.authorSignature ?: "Txoritxo"
         logger.info("Received -> ($chatId)${chatName} ${messageTextReceived}")
         users.addNewUserIdIfAbsent(chatId, chatName)
         answerMessage(messageTextReceived, chatId)

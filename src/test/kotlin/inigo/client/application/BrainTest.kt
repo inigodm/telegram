@@ -30,11 +30,11 @@ class BrainTest {
         every { repo.getProductsByQuery("tvs") } returns listOf(item)
         var response = sut.answer("buscar tvs")
 
-        assertEquals(response, listOf(item).map { formatRawData(it) })
+        assertEquals(response, sut.format(listOf(item)))
 
         response = sut.answer("bilatu tvs")
 
-        assertEquals(response, listOf(item).map { formatRawData(it) })
+        assertEquals(response, sut.format(listOf(item)))
     }
 
     @Test
@@ -44,7 +44,7 @@ class BrainTest {
 
         val response = sut.answer("buscar tvs LG")
 
-        assertEquals(response, listOf(item).map { formatRawData(it) })
+        assertEquals(response, sut.format(listOf(item)))
     }
 
     @Test
@@ -64,12 +64,6 @@ class BrainTest {
         assertEquals(response, listOf("Scraping eta informazioa gordetzen... minutu batzuk barru izango dira erantzun berriak"))
         verify { repo.updateProducts("ldlc") }
     }
-
-    /*@Test
-    fun `should make a response for a void repository response`() {
-        every{ repo.getProductsByType(any()) } returns listOf()
-        sut.answer()
-    }*/
 
     @Test
     fun `should return a message when word not recognized`() {

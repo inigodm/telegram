@@ -63,9 +63,9 @@ class Brain(var repo: Repository) {
     private fun find(words: List<String>): List<String> {
         if (words.size == 3){
             val res: List<ItemData> = repo.getProductsByTypeWithQuery(types.get(words[1]) ?: "any", words[2])
-            return if (res.isEmpty()) listOf("No hay nada de eso") else res.map { obtainItemData(it) }
+            return if (res.isEmpty()) listOf("No hay nada de eso") else format(res)
         } else if (words.size == 2){
-            return repo.getProductsByQuery(words[1]).map { obtainItemData(it) }
+            return  format(repo.getProductsByQuery(words[1]))
         } else {
             return listOf("""Se usa asi: buscar [tipo] [palabra a buscar]
                 Erablitzeko era: buscar [mota] [bilatzeko hitza]
@@ -78,7 +78,7 @@ class Brain(var repo: Repository) {
         return listOf("Scraping eta informazioa gordetzen... minutu batzuk barru izango dira erantzun berriak")
     }
 
-    private fun format(items: List<ItemData>): List<String> {
+    fun format(items: List<ItemData>): List<String> {
         var i = 0
         var type = ""
         var accum = ""

@@ -33,11 +33,20 @@ class TxantxangorriBot(val brain: Brain = Brain(Repository(Client())),
     override fun onUpdateReceived(update: Update?) {
         val messageTextReceived = update!!.message.text
         val chatId = update.message.chatId
-        val chatName = update.message.authorSignature ?: "Txoritxo"
+        val chatName = obtainName(update)
         logger.info("Received -> ($chatId)${chatName} ${messageTextReceived}")
         users.addNewUserIdIfAbsent(chatId, chatName)
         answerMessage(messageTextReceived, chatId)
         logger.info("Finished $chatId's $update")
+    }
+
+    private fun obtainName(update: Update): String {
+        return try {
+            val from = update.message.from
+            "(${from.userName}) ${from.firstName} ${from.lastName}"
+        } catch (e: Exception) {
+            "txoritxo"
+        }
     }
 
     fun answerMessage(messageTextReceived: String, chatId: Long = 0L) {

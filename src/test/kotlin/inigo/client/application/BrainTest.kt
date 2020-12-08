@@ -1,7 +1,7 @@
 package inigo.client.application
 
 import inigo.client.infraestructure.Client
-import inigo.client.infraestructure.ItemData
+import inigo.client.domain.ItemData
 import inigo.client.infraestructure.Repository
 import inigo.client.randomItemDataOfType
 import io.mockk.clearMocks
@@ -116,6 +116,28 @@ ${formatRawData(item2)}
         val response2 = sut.answer("berriak lcdl")
 
         assertEquals(response, response2)
+    }
+
+    @Test
+    fun `should broadcast for new products`() {
+        val item1 = randomItemDataOfType("type1")
+        val item2 = randomItemDataOfType("type2")
+        val item3 = randomItemDataOfType("type1")
+        val item4 = randomItemDataOfType("type1")
+        every { repo.getAlerts(any()) } returns listOf(item1, item3, item4, item2)
+
+        val response = sut.answer("broadcast lcdl")
+
+        assertEquals(response.joinToString(""), """<b><u>
+
+type1</u></b>
+
+${formatRawData(item1)}${formatRawData(item3)}${formatRawData(item4)}<b><u>
+
+type2</u></b>
+
+${formatRawData(item2)}
+""".trimMargin())
     }
 
     @Test

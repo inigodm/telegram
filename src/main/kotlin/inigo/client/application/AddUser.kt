@@ -3,8 +3,8 @@ package inigo.client.application
 import inigo.client.infraestructure.Users
 import inigo.repository.UserRepository
 
-class AddUsersId(val users: Users = Users(UserRepository()),
-                 val chatsIds: MutableList<Long> = users.getAllUserIds().toMutableList()) {
+class AddUsersId(private val users: Users = Users(UserRepository()),
+                 private val chatsIds: MutableList<Long> = users.getAllUserIds().toMutableList()) {
 
     fun addNewUserIdIfAbsent(id: Long, name: String = "") {
         if (!chatsIds.contains(id)) {

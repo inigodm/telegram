@@ -1,9 +1,11 @@
 package inigo.client.infraestructure
 
+import inigo.client.domain.ItemData
 import inigo.client.randomItemData
 import io.mockk.clearMocks
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
@@ -63,5 +65,7 @@ class RepositoryTest {
     fun `should update products`() {
         every { client.put("http://localhost:8080/web/scrap/ldlc/type/any") } returns Unit
         sut.updateProducts( "any", "ldlc")
+
+        verify { client.put("http://localhost:8080/web/scrap/ldlc/type/any") }
     }
 }

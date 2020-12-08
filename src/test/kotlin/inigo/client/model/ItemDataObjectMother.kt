@@ -1,7 +1,7 @@
 package inigo.client
 
 import com.github.javafaker.Faker
-import inigo.client.infraestructure.ItemData
+import inigo.client.domain.ItemData
 
 fun randomItemData() : ItemData {
     val faker = Faker()

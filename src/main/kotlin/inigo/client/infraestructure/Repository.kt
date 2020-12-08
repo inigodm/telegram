@@ -1,10 +1,11 @@
 package inigo.client.infraestructure
 
+import inigo.client.domain.ItemData
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 
-class Repository(var client: Client, var logger: Logger = LoggerFactory.getLogger(Repository::javaClass.name)) {
-    val HOST = "localhost"
+class Repository(private val client: Client, private val logger: Logger = LoggerFactory.getLogger(Repository::javaClass.name)) {
+    private val HOST = "localhost"
 
     fun getAlerts(shop: String = "ldlc") : List<ItemData>{
         logger.debug("Going to http://$HOST:8080/web/alert/$shop")

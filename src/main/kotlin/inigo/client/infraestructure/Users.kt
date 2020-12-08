@@ -16,4 +16,12 @@ class Users(var repo: UserRepository, var logger: Logger = LoggerFactory.getLogg
     fun getAllUserIds(): List<Long> {
         return repo.findBy("Select * from users").map { it as List<Any> }.map { "${it[0]}".toLong() }
     }
+
+    fun delete(id: Long) {
+        try{
+            repo.executeCommand("delete from users where id = ?", listOf(id))
+        } catch (e: Exception) {
+            logger.error(e.message, e)
+        }
+    }
 }

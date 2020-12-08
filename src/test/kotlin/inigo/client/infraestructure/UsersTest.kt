@@ -4,6 +4,7 @@ import inigo.repository.UserRepository
 import io.mockk.clearMocks
 import io.mockk.every
 import io.mockk.mockk
+import io.mockk.verify
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.Assertions.*
@@ -24,9 +25,10 @@ class UsersTest {
     fun `should insert users`() {
         val id = 555L
         val name = "name"
-        every { repo.executeCommand("insert into users (id, name) values (?, ?)", listOf(id, name)) } returns Unit
 
         sut.insertUser(id, name)
+
+        verify { repo.executeCommand("insert into users (id, name) values (?, ?)", listOf(id, name)) }
     }
 
     @Test
@@ -36,5 +38,14 @@ class UsersTest {
         val res = sut.getAllUserIds()
 
         assertEquals(res, mutableListOf(1L, 2L, 3L))
+        verify { repo.findBy("Select * from users") }
+    }
+
+    @Test
+    fun `should delete users` () {
+        sut.delete(42L)
+
+        verify {repo.executeCommand("delete from users where id = ?", listOf(42L)) }
+
     }
 }

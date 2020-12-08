@@ -20,4 +20,9 @@ class AddUsersId(val users: Users = Users(UserRepository()),
             chatsIds
         }
     }
+
+    fun deleteUSer(chatId: Long) {
+        chatsIds.remove(chatId)
+        users.delete(chatId)
+    }
 }

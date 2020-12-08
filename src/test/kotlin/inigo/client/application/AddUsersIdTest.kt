@@ -7,7 +7,7 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
 class AddUsersIdTest {
-    val users : Users = mockk()
+    val users : Users = mockk(relaxed = true)
     val chatsIds : MutableList<Long> = spyk(mutableListOf(), )
     val sut = AddUsersId(users, chatsIds)
 
@@ -50,4 +50,14 @@ class AddUsersIdTest {
         assertEquals(sut.findReceivers(1, 42L), listOf(41L, 42L))
     }
 
+    @Test
+    fun `should delete update on required` () {
+        chatsIds.add(41L)
+        chatsIds.add(42L)
+
+        sut.deleteUSer(41L)
+
+        verify(exactly = 1) { users.delete(41L) }
+        assertFalse(chatsIds.contains(41L))
+    }
 }

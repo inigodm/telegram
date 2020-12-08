@@ -35,7 +35,11 @@ class TxantxangorriBot(val brain: Brain = Brain(Repository(Client())),
         val chatId = update.message.chatId
         val chatName = obtainName(update)
         logger.info("Received -> ($chatId)${chatName} ${messageTextReceived}")
-        users.addNewUserIdIfAbsent(chatId, chatName)
+        if (messageTextReceived.equals("dame de baja")){
+            users.deleteUSer(chatId)
+        } else {
+            users.addNewUserIdIfAbsent(chatId, chatName)
+        }
         answerMessage(messageTextReceived, chatId)
         logger.info("Finished $chatId's $update")
     }

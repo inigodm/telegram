@@ -78,6 +78,9 @@ class BrainTest {
             Ta [mota]-k honako hauek izan daitezke:
             tarjetas, tvs, memorias, tablets, camaras, auriculares, ssd, hdd, procesadores, moviles e impresoras
             
+            Nahi ez baldin baduzu notifikazio gehiagorik esan:
+            
+            dame de baja
             --
             
             QE ISE CABESSAAA???? 
@@ -90,6 +93,11 @@ class BrainTest {
             
             tarjetas, tvs, memorias, tablets, camaras, auriculares, ssd, hdd, 
                 procesadores, moviles e impresoras
+                
+            Para darte de baja y no recibir mas notificaciones manda el mensaje:
+            
+            dame de baja
+            
                 """))
     }
 

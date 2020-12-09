@@ -1,6 +1,6 @@
 package inigo.client.application
 
-import inigo.client.infraestructure.ItemData
+import inigo.client.domain.ItemData
 import inigo.client.infraestructure.Repository
 
 class Brain(var repo: Repository) {
@@ -45,6 +45,9 @@ class Brain(var repo: Repository) {
             Ta [mota]-k honako hauek izan daitezke:
             tarjetas, tvs, memorias, tablets, camaras, auriculares, ssd, hdd, procesadores, moviles e impresoras
             
+            Nahi ez baldin baduzu notifikazio gehiagorik esan:
+            
+            dame de baja
             --
             
             QE ISE CABESSAAA???? 
@@ -57,6 +60,11 @@ class Brain(var repo: Repository) {
             
             tarjetas, tvs, memorias, tablets, camaras, auriculares, ssd, hdd, 
                 procesadores, moviles e impresoras
+                
+            Para darte de baja y no recibir mas notificaciones manda el mensaje:
+            
+            dame de baja
+            
                 """)
     }
 

@@ -13,7 +13,7 @@ fun main(args: Array<String>) {
         if (args[0] == "update"){
             executeUpdate()
         } else {
-            sendNewMessage()
+            sendNewMessage(args)
         }
     }else{
         runService()
@@ -21,8 +21,8 @@ fun main(args: Array<String>) {
     Logger.getLogger("main").info("End-------------------")
 }
 
-fun sendNewMessage() {
-    TxantxangorriBot().answerMessage("broadcast ldlc", 1)
+fun sendNewMessage(args : Array<String>) {
+    TxantxangorriBot().answerMessage(args.joinToString(" "), 1)
 }
 
 fun executeUpdate() {

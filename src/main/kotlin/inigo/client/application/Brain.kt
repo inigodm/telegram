@@ -8,6 +8,7 @@ class Brain(var repo: Repository) {
     val RESPONSE_TO_ALL = 1
     private val types = mapOf(
         "tarjetas" to "tarjetagrfica",
+        "tarjetak" to "tarjetagrfica",
         "tvs" to "tv",
         "memorias" to "memoriapc",
         "tablets" to "tablet",
@@ -26,12 +27,12 @@ class Brain(var repo: Repository) {
         "update" to Pair(Brain::update, RESPONSE_TO_SENDER),
         "nuevas" to Pair(Brain::news, RESPONSE_TO_SENDER),
         "berriak" to Pair(Brain::news, RESPONSE_TO_SENDER),
+        "bilatuguztientzat" to Pair(Brain::find, RESPONSE_TO_ALL),
         "broadcast" to Pair(Brain::news, RESPONSE_TO_ALL)
     )
 
     fun answer(message: String): List<String> {
         val words = message.toLowerCase().split("\\s+".toRegex())
-
         if (verbResponses.keys.contains(words[0])) {
             return verbResponses[words[0]]!!.first.invoke(this, words)
         }

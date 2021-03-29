@@ -37,7 +37,7 @@ class Brain(var repo: Repository) {
         }
 
         return listOf("""Ze oxxxtia diozu burundi!!! 
-                
+                $message???
             Erabil dezakezuen komanduek dabe (bai, itzulitak xD):
                 --> bilatu [mota?] [hitz bat bilatzeko (a.g: GTX, RTX, amd...)]
                 --> berriak
@@ -73,10 +73,10 @@ class Brain(var repo: Repository) {
             val res: List<ItemData> = repo.getProductsByTypeWithQuery(types.get(words[1]) ?: "any", words[2])
             return if (res.isEmpty()) listOf("No hay nada de eso") else format(res)
         } else if (words.size == 2){
-            return  format(repo.getProductsByQuery(words[1]))
+            return  format(repo.getProductsByType(types.get(words[1])!!))
         } else {
             return listOf("""Se usa asi: buscar [tipo] [palabra a buscar]
-                Erablitzeko era: buscar [mota] [bilatzeko hitza]
+                Erablitzeko era: bilatu [mota] [bilatzeko hitza]
             """.trimMargin())
         }
     }

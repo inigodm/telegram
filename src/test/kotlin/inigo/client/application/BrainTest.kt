@@ -27,7 +27,7 @@ class BrainTest {
     @Test
     fun `should select to find by query`() {
         val item = randomItemData()
-        every { repo.getProductsByQuery("tvs") } returns listOf(item)
+        every { repo.getProductsByType("tv", "ldlc") } returns listOf(item)
         var response = sut.answer("buscar tvs")
 
         assertEquals(response, sut.format(listOf(item)))
@@ -52,7 +52,7 @@ class BrainTest {
         val response = sut.answer("buscar")
 
         assertEquals(response, listOf("""Se usa asi: buscar [tipo] [palabra a buscar]
-                Erablitzeko era: buscar [mota] [bilatzeko hitza]
+                Erablitzeko era: bilatu [mota] [bilatzeko hitza]
             """.trimMargin()))
     }
 
@@ -70,7 +70,7 @@ class BrainTest {
         val response = sut.answer("fdsfsd")
 
         assertEquals(response, listOf("""Ze oxxxtia diozu burundi!!! 
-                
+                fdsfsd???
             Erabil dezakezuen komanduek dabe (bai, itzulitak xD):
                 --> bilatu [mota?] [hitz bat bilatzeko (a.g: GTX, RTX, amd...)]
                 --> berriak
